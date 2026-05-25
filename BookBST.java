@@ -86,4 +86,52 @@ public class BookBST {
         while (node.left != null) node = node.left;
         return node;
     }
+
+    // ---- PUBLIC SAVE TO CSV (Data Persistence) ----
+    public void saveToCSV(java.io.PrintWriter pw) {
+        savePreOrder(root, pw);
+    }
+
+    private void savePreOrder(Book node, java.io.PrintWriter pw) {
+        if (node != null) {
+            // Format: isbn,title,author
+            pw.println(node.isbn + "," + node.title + "," + node.author);
+            savePreOrder(node.left, pw);
+            savePreOrder(node.right, pw);
+        }
+    }
+
+    // ---- PUBLIC SEARCH BY TEXT (O(n) Traversal) ----
+    public void searchByText(String keyword) {
+        // We use an array of size 1 as a counter so it updates across the recursion
+        int[] matchCount = {0}; 
+        System.out.println("  Searching catalogue for: \"" + keyword + "\"...");
+        
+        searchByTextHelper(root, keyword.toLowerCase(), matchCount);
+        
+        if (matchCount[0] == 0) {
+            System.out.println("  [Result] No books found matching that description.");
+        } else {
+            System.out.println("  [Result] Found " + matchCount[0] + " matching book(s).");
+        }
+    }
+
+    private void searchByTextHelper(Book node, String keyword, int[] matchCount) {
+        if (node != null) {
+            // 1. Visit Left
+            searchByTextHelper(node.left, keyword, matchCount);
+            
+            // 2. Check Current Node (convert to lowercase for case-insensitive matching)
+            String lowerTitle = node.title.toLowerCase();
+            String lowerAuthor = node.author.toLowerCase();
+            
+            if (lowerTitle.contains(keyword) || lowerAuthor.contains(keyword)) {
+                System.out.println("    -> " + node.toString());
+                matchCount[0]++; // Increase the found counter
+            }
+            
+            // 3. Visit Right
+            searchByTextHelper(node.right, keyword, matchCount);
+        }
+    }
 }

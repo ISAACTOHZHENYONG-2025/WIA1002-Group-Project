@@ -8,4 +8,5 @@ public interface LibraryADT {
     void borrowBook(int isbn);
     void viewLatestHistory();
     void searchBook(int isbn);
+    void searchBookByText(String keyword);
 }

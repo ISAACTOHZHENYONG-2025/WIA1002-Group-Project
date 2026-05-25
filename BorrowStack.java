@@ -33,11 +33,38 @@ public class BorrowStack {
         }
     }
 
+    // ---- PUBLIC SAVE TO CSV (Data Persistence) ----
+    public void saveToCSV(java.io.PrintWriter pw) {
+        // Save from bottom to top so when loading, we push in the exact same order
+        for (int i = 0; i < stack.size(); i++) {
+            Book b = stack.get(i);
+            pw.println(b.isbn + "," + b.title + "," + b.author);
+        }
+    }
+
     public boolean isEmpty() {
         return stack.isEmpty();
     }
 
     public int size() {
         return stack.size();
+    }
+
+    // Pop a book off the top of the stack (Returns the book)
+    public Book pop() {
+        if (!stack.isEmpty()) {
+            return stack.pop();
+        }
+        return null;
+    }
+
+    // Check if an ISBN is currently anywhere in the borrowed stack
+    public boolean containsISBN(int isbn) {
+        for (int i = 0; i < stack.size(); i++) {
+            if (stack.get(i).isbn == isbn) {
+                return true;
+            }
+        }
+        return false;
     }
 }
