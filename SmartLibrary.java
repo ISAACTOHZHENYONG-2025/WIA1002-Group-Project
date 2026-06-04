@@ -44,9 +44,13 @@ public class SmartLibrary implements LibraryADT {
     public void borrowBook(int isbn) {
         Book b = catalogue.search(isbn);
         if (b != null) {
-            catalogue.remove(isbn);   // Remove from catalogue
-            history.push(b);          // Push onto history stack
-            System.out.println("  Borrowed: " + b);
+            // Create a completely separate copy for the history stack 
+            // so tree changes can never leak into your history objects
+            Book historyCopy = new Book(b.isbn, b.title, b.author);
+            
+            catalogue.remove(isbn);   
+            history.push(historyCopy);          
+            System.out.println("  Borrowed: " + historyCopy);
         } else {
             System.out.println("  Book with ISBN " + isbn + " is not in the catalogue.");
         }
@@ -116,7 +120,7 @@ public class SmartLibrary implements LibraryADT {
                     System.out.println("  Goodbye!");
                     break;
                 default:
-                    System.out.println("  [Error] Invalid option. Choose 1–7.");
+                    System.out.println("  [Error] Invalid option. Choose 1-7.");
             }
         }
 
